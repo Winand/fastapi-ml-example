@@ -1,6 +1,12 @@
+import logging
+
 from fastapi import FastAPI
 
 from fastapi_ml_example.api import health
+from fastapi_ml_example.core.logging import configure_logging
+
+configure_logging()
+logger = logging.getLogger(__name__)
 
 
 def create_app() -> FastAPI:
@@ -10,6 +16,7 @@ def create_app() -> FastAPI:
     return app
 
 app = create_app()
+logger.info("Application created")
 
 
 def main() -> None:
