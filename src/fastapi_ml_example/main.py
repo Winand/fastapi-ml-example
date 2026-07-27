@@ -1,12 +1,21 @@
 from fastapi import FastAPI
 
-app = FastAPI(title="FastAPI ML Example")
+from fastapi_ml_example.api import health
+
+
+def create_app() -> FastAPI:
+    "Create and configure a FastAPI app instance."
+    app = FastAPI(title="FastAPI ML Example")
+    app.include_router(health.router)
+    return app
+
+app = create_app()
 
 
 def main() -> None:
     "Запуск приложения в Uvicorn (`uv run fastapi-ml-example`)."
-    import uvicorn
-    uvicorn.run(app, port=8080)
+    import uvicorn  # noqa: PLC0415
+    uvicorn.run(app, port=8000)
 
 
 if __name__ == "__main__":
