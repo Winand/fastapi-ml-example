@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from fastapi_ml_example.api import health
 from fastapi_ml_example.core.logging import configure_logging
 
+# no-op when started via `uvicorn ... --log-config=log_config.json`
 configure_logging()
 logger = logging.getLogger(__name__)
 

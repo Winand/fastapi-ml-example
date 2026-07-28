@@ -1,0 +1,17 @@
+services:
+  fastapi_ml_example:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    restart: unless-stopped
+    # https://docs.docker.com/reference/dockerfile/#healthcheck
+    # https://web.archive.org/web/20230706205635/https://docs.docker.com/engine/reference/builder/
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8000/health"]
+      interval: 15s  # time between checks (1st is after `interval` seconds; default 30s)
+      timeout: 3s  # check command timeout (default 30s)
+      # retries: 3  # after N retries service is marked as unhealthy (default 3s)
+      # start_period: 5s  # maximum container bootstrap time (default 0)
+      # start_interval: 5s  # time between checks during the start period (Docker 25+; default 5s)
+    ports:
+      - 8000:8000
