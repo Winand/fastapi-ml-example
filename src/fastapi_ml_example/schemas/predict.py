@@ -10,3 +10,6 @@ class PredictRequest(BaseModel):
 class PredictResponse(BaseModel):
     "Prediction result."
     prediction: float
+
+
+EMPTY_RESPONSE = PredictResponse(prediction=.0)

@@ -39,3 +39,6 @@ Log records filter can be configured in `docker/log_config.json` for handlers or
     }
 }
 ```
+
+
+Request processing exception handlers are managed in `core.exceptions.exception_handlers`.
