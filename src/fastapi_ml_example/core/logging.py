@@ -38,7 +38,7 @@ def configure_logging(level: int = logging.INFO, log_file: Path | None = None) -
 
     logging.basicConfig(
         level=level, handlers=handlers,
-        format="INTERNAL %(asctime)s %(levelname)-8s %(name)s: %(message)s",
+        format="%(asctime)s %(levelname)-8s %(name)s: %(message)s",
     )
 
 
