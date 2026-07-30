@@ -1,5 +1,5 @@
 ARG UV_IMAGE=ghcr.io/astral-sh/uv
-ARG VERSION_UV=0.11.32
+ARG VERSION_UV=0.12.0
 ARG BASE_IMAGE=python:3.13-slim
 
 FROM ${UV_IMAGE}:${VERSION_UV} AS uv
@@ -10,7 +10,7 @@ ARG PYPI_MIRROR=https://pypi.org
 ENV UV_DEFAULT_INDEX=${PYPI_MIRROR}/simple
 # https://docs.astral.sh/uv/configuration/authentication/#custom-ca-certificates
 # ENV UV_INSECURE_HOST=${PYPI_MIRROR}
-ENV UV_NATIVE_TLS=1
+ENV UV_SYSTEM_CERTS=1
 # https://docs.astral.sh/uv/concepts/python-versions/#disabling-automatic-python-downloads
 ENV UV_PYTHON_DOWNLOADS=never
 # for uv sync https://docs.astral.sh/uv/concepts/projects/config/#project-environment-path
@@ -39,4 +39,5 @@ COPY --chown=app:app src /
 COPY --chown=app:app docker/log_config.json /log_config.json
 
 EXPOSE 8000
+ENV PROMETHEUS_MULTIPROC_DIR="/dev/shm"
 CMD ["uvicorn", "fastapi_ml_example.main:app", "--host=0.0.0.0", "--port=8000", "--workers=4", "--log-config=log_config.json"]

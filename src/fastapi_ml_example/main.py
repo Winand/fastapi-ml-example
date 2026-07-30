@@ -2,6 +2,7 @@ from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from prometheus_fastapi_instrumentator import Instrumentator
 
 from fastapi_ml_example.api import health, predict
 from fastapi_ml_example.core.exceptions import exception_handlers
@@ -25,6 +26,7 @@ def create_app() -> FastAPI:
         title="FastAPI ML Example", lifespan=lifespan,
         exception_handlers=exception_handlers,
     )
+    Instrumentator().instrument(app).expose(app)  # endpoint /metrics
     app.include_router(health.router)
     app.include_router(predict.router)
     return app

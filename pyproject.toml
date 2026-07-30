@@ -9,6 +9,7 @@ authors = [
 requires-python = ">=3.13"
 dependencies = [
     "fastapi>=0.140.7",  # https://fastapi.tiangolo.com/#dependencies
+    "prometheus-fastapi-instrumentator>=8.1.0",
     "uvicorn[standard]>=0.51.0",  # https://uvicorn.dev/installation/#optional-dependencies
 ]
 

@@ -1,6 +1,6 @@
 import logging
 from collections.abc import Callable, Coroutine
-from typing import Any, TypeVar
+from typing import Any
 
 from fastapi import Request, status
 from fastapi.exceptions import RequestValidationError
@@ -25,7 +25,8 @@ class UnhandledError(Exception):
 async def internal_error_handler(_: Request, exc: UnhandledError) -> JSONResponse:
     "Log unhandled errors and return default response."
     logger.error(exc.body, exc_info=exc.__cause__)
-    return JSONResponse(EMPTY_RESPONSE.model_dump(), status.HTTP_200_OK)
+    return JSONResponse(EMPTY_RESPONSE.model_dump(),
+                        status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 async def validation_exception_handler(
@@ -33,7 +34,8 @@ async def validation_exception_handler(
 ) -> JSONResponse:
     "Log validation errors and return default response."
     logger.error(exc.body, exc_info=exc)
-    return JSONResponse(EMPTY_RESPONSE.model_dump(), status.HTTP_200_OK)
+    return JSONResponse(EMPTY_RESPONSE.model_dump(),
+                        status.HTTP_422_UNPROCESSABLE_ENTITY)
 
 
 # Handlers should be registered in app like this:
