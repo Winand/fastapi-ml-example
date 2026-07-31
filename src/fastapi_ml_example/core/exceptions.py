@@ -35,7 +35,7 @@ async def validation_exception_handler(
     "Log validation errors and return default response."
     logger.error(exc.body, exc_info=exc)
     return JSONResponse(EMPTY_RESPONSE.model_dump(),
-                        status.HTTP_422_UNPROCESSABLE_ENTITY)
+                        status.HTTP_422_UNPROCESSABLE_CONTENT)
 
 
 # Handlers should be registered in app like this:
