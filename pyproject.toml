@@ -1,7 +1,7 @@
 [project]
 name = "fastapi-ml-example"
 version = "0.1.0"
-description = "Add your description here"
+description = "ML web-service template"
 readme = "README.md"
 authors = [
     { name = "Andrey Makarov", email = "winandfx@gmail.com" }

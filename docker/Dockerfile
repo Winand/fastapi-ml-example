@@ -1,8 +1,7 @@
-ARG UV_IMAGE=ghcr.io/astral-sh/uv
-ARG VERSION_UV=0.12.0
+ARG UV_IMAGE=ghcr.io/astral-sh/uv:0.12.0
 ARG BASE_IMAGE=python:3.13-slim
 
-FROM ${UV_IMAGE}:${VERSION_UV} AS uv
+FROM ${UV_IMAGE} AS uv
 COPY pyproject.toml uv.lock /
 
 FROM ${BASE_IMAGE}
@@ -31,13 +30,37 @@ RUN --mount=from=uv,source=/uv,target=/bin/uv \
   rm -rf /usr/local/share/jupyter && \
   rm /tmp/requirements.txt
 
-# create user if not exists
-RUN addgroup --system app && \
-    adduser --system app --ingroup app || true
+# wget is required for health check (Debian, Fedora)
+# NOTE: Almalinux/Rockylinux have curl preinstalled, BusyBox has wget built-in
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    --mount=type=cache,target=/var/cache/dnf,sharing=locked \
+    command -v wget >/dev/null || \
+    if command -v apt >/dev/null; then \
+        apt update && apt install --no-install-recommends -y wget; \
+    elif command -v dnf >/dev/null; then \
+        dnf install -y wget; \
+    else echo "WARNING: could not find apt or dnf to install wget" >&2; \
+    fi
+# create user if not exists (Debian, BusyBox, Fedora)
+RUN addgroup --system app && adduser --system app --ingroup app || \
+    useradd --system app || :
+
 USER app
 COPY --chown=app:app src /
 COPY --chown=app:app docker/log_config.json /log_config.json
 
 EXPOSE 8000
 ENV PROMETHEUS_MULTIPROC_DIR="/dev/shm"
+# https://docs.docker.com/reference/dockerfile/#healthcheck
+# https://web.archive.org/web/20230706205635/https://docs.docker.com/engine/reference/builder/
+HEALTHCHECK \
+    # time between checks (1st is after `interval` seconds; default 30s)
+    --interval=15s \
+    # check command timeout (default 30s)
+    --timeout=3s \
+    # --retries=3 -- after N retries service is marked as unhealthy (default 3)
+    # --start-period=5s -- maximum container bootstrap time (default 0)
+    # --start-interval=5s -- time between checks during the start period (Docker 25+; default 5s)
+    CMD ["wget", "-qO-", "http://127.0.0.1:8000/health"]
 CMD ["uvicorn", "fastapi_ml_example.main:app", "--host=0.0.0.0", "--port=8000", "--workers=4", "--log-config=log_config.json"]
