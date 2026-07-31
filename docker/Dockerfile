@@ -63,4 +63,4 @@ HEALTHCHECK \
     # --start-period=5s -- maximum container bootstrap time (default 0)
     # --start-interval=5s -- time between checks during the start period (Docker 25+; default 5s)
     CMD ["wget", "-qO-", "http://127.0.0.1:8000/health"]
-CMD ["uvicorn", "fastapi_ml_example.main:app", "--host=0.0.0.0", "--port=8000", "--workers=4", "--log-config=log_config.json"]
+CMD ["uvicorn", "fastapi_ml_example.main:app", "--host=0.0.0.0", "--port=8000", "--log-config=log_config.json"]
