@@ -20,13 +20,14 @@ USER root
 RUN --mount=from=uv,source=/uv,target=/bin/uv \
     --mount=from=uv,source=/pyproject.toml,target=/pyproject.toml \
     --mount=from=uv,source=/uv.lock,target=/uv.lock \
+    --mount=type=cache,target=/root/.cache/uv \
   # Recreate uv.lock and install dependencies: uv sync
   # Install dependencies from an existing uv.lock: uv sync --frozen
   # uv sync --frozen --no-cache --no-dev --no-install-project
   uv export --no-hashes --no-emit-project --frozen --no-group dev \
     --prune plotly --prune matplotlib --prune graphviz --prune scipy \
-    -o /tmp/requirements.txt --no-cache-dir && \
-  uv pip install --no-cache-dir --system -r /tmp/requirements.txt --no-deps && \
+    -o /tmp/requirements.txt && \
+  uv pip install --link-mode=copy --system -r /tmp/requirements.txt --no-deps && \
   rm -rf /usr/local/share/jupyter && \
   rm /tmp/requirements.txt
 
