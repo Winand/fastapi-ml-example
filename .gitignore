@@ -9,3 +9,8 @@ wheels/
 # Virtual environments
 .venv
 __archive
+.dataset-cache
+catboost_info
+.zed
+src/fastapi_ml_example/ml/artifacts
+*.log

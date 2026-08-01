@@ -1,8 +1,7 @@
-from pydantic import BaseModel
+from typing import TypedDict
 
 
-class PredictRequest(BaseModel):
-    "Prediction input data."
+class FeaturesPayload(TypedDict):
     age: float
     workclass: str
     fnlwgt: float
@@ -17,11 +16,3 @@ class PredictRequest(BaseModel):
     capital_loss: float
     hours_per_week: float
     native_country: str
-
-
-class PredictResponse(BaseModel):
-    "Prediction result."
-    income_ge_50k: float
-
-
-EMPTY_RESPONSE = PredictResponse(income_ge_50k=.0)
