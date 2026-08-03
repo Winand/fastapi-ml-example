@@ -1,22 +1,22 @@
 from typing import override
 
-from fastapi_ml_example.ml.model import Model
-from fastapi_ml_example.schemas.dto import FeaturesPayload
-from fastapi_ml_example.schemas.predict import PredictRequest
-from fastapi_ml_example.services.prediction_service import PredictionService
+from fastapi_ml_example.ml.model import IncomeModel
+from fastapi_ml_example.schemas.dto import IncomeFeatures
+from fastapi_ml_example.schemas.predict import IncomePredictRequest
+from fastapi_ml_example.services.prediction_service import IncomePredictionService
 
 
-class StubModel(Model):
+class StubIncomeModel(IncomeModel):
     "ML model stub for prediction service."
     @override
-    def predict(self, features: FeaturesPayload) -> float:
+    def predict(self, features: IncomeFeatures) -> float:
         return 0.5
 
 
 def test_prediction_service_returns_model_prediction() -> None:
     "Prediction service calls an ML model and returns its result."
-    service = PredictionService(StubModel())
-    payload = PredictRequest(
+    service = IncomePredictionService(StubIncomeModel())
+    payload = IncomePredictRequest(
         age = 0,
         workclass = "",
         fnlwgt = 0,

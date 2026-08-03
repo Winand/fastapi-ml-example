@@ -10,7 +10,7 @@ class LogRecordFilter(logging.Filter):
     "filters": {
       "drop_health": {
         "()": "fastapi_ml_example.core.logging.LogRecordFilter",
-        "patterns": ["~", "GET /health"]
+        "patterns": ["GET /health"], "exclude": true
       }
     }
 

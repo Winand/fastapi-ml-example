@@ -7,7 +7,7 @@ from prometheus_fastapi_instrumentator import Instrumentator
 from fastapi_ml_example.api import health, predict
 from fastapi_ml_example.core.exceptions import exception_handlers
 from fastapi_ml_example.core.logging import configure_logging
-from fastapi_ml_example.ml.model import load_model
+from fastapi_ml_example.ml.model import load_country_model, load_income_model
 
 # no-op when started via `uvicorn ... --log-config=log_config.json`
 configure_logging()
@@ -16,7 +16,8 @@ configure_logging()
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
     "Resource management."
-    app.state.model = load_model()
+    app.state.income_model = load_income_model()
+    app.state.country_model = load_country_model()
     yield
 
 

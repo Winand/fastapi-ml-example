@@ -6,7 +6,7 @@ from fastapi import Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, Response
 
-from fastapi_ml_example.schemas.predict import EMPTY_RESPONSE
+from fastapi_ml_example.schemas.predict import EMPTY_RESPONSES
 
 JSON = dict[str, "JSON"] | list["JSON"] | str | int | float | bool | None
 
@@ -22,19 +22,19 @@ class UnhandledError(Exception):
         super().__init__()
 
 
-async def internal_error_handler(_: Request, exc: UnhandledError) -> JSONResponse:
+async def internal_error_handler(req: Request, exc: UnhandledError) -> JSONResponse:
     "Log unhandled errors and return default response."
     logger.error(exc.body, exc_info=exc.__cause__)
-    return JSONResponse(EMPTY_RESPONSE.model_dump(),
+    return JSONResponse(EMPTY_RESPONSES[req.scope["route"].name].model_dump(),
                         status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 async def validation_exception_handler(
-    _: Request, exc: RequestValidationError,
+    req: Request, exc: RequestValidationError,
 ) -> JSONResponse:
     "Log validation errors and return default response."
     logger.error(exc.body, exc_info=exc)
-    return JSONResponse(EMPTY_RESPONSE.model_dump(),
+    return JSONResponse(EMPTY_RESPONSES[req.scope["route"].name].model_dump(),
                         status.HTTP_422_UNPROCESSABLE_CONTENT)
 
 
